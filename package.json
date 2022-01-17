@@ -1,27 +1,33 @@
 {
-  "name": "theme.js",
+  "name": "@pedro/theme.js",
   "version": "1.0.0",
   "description": "A simple theming helper",
   "author": "Pedro S.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "license": "GPLV3",
+  "license": "GPL-3.0",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint . --ext .ts",
     "build": "tsc",
     "test": "jest --config jestconfig.json"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "eslint": "^8.7.0",
+    "eslint-config-prettier": "^8.3.0",
     "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.3",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.5.4"
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PedroSilva8/theme.js"
+  }
 }

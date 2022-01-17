@@ -99,7 +99,7 @@ export default class ThemeJs {
    * @param name The name of the theme to apply, leave undefined to apply selected theme
    * @param spacing The value used to replace _ , - by default
    */
-  static ApplyTheme(name?: string | undefined, spacing: string = '-') {
+  static ApplyTheme(name?: string | undefined, spacing = '-') {
     let selTheme = name ? this.Themes.find((val) => val.name === name) : this.CurrentTheme()
 
     if (!selTheme) selTheme = {}

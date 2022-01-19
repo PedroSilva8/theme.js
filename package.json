@@ -1,11 +1,14 @@
 {
-  "name": "@pedro/theme.js",
+  "name": "@pedro_s/theme.js",
   "version": "1.0.0",
   "description": "A simple theming helper",
   "author": "Pedro S.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "license": "GPL-3.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",

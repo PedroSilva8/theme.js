@@ -1,5 +1,3 @@
-import fs = require('fs')
-
 /** Theme Type */
 type Theme = {
   [key: string]: string
@@ -53,28 +51,17 @@ export default class ThemeJs {
 
   /**
    * Load a theme from a file
-   * @param path The file path
-   * @param onLoaded Function called if loaded corretly
-   * @param onError Function called if fails to load
+   * @param theme The object to be loaded
    * @param setCurrent If it should set new theme as selected
+   * @returns True if theme is valid, otherwise returns false
    */
-  static LoadTheme(
-    path: string,
-    onLoaded: (theme: Theme) => void,
-    onError: (err: NodeJS.ErrnoException) => void,
-    setCurrent = false,
-  ) {
-    fs.readFile(path, (err, data) => {
-      if (err) return onError(err)
-
-      const obj = JSON.parse(data.toString())
-
-      if (obj.name && (obj as Theme)) {
-        this.Themes.push(obj)
-        if (setCurrent) this.SelectedTheme = this.Themes.length - 1
-        onLoaded(this.Themes[this.Themes.length - 1])
-      }
-    })
+  static LoadTheme(theme: unknown, setCurrent = false) {
+    if (theme as Theme) {
+      this.Themes.push(theme as Theme)
+      if (setCurrent) this.SelectedTheme = this.Themes.length - 1
+      return true
+    }
+    return false
   }
 
   /**

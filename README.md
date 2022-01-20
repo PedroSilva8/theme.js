@@ -25,7 +25,7 @@ ThemeJs.SetThemeValue("background", "#000")
 ThemeJs.ApplyTheme()
 ```
 
-Then to use a color all you had to do is to add a `var(--background)` or `var(--rgb-background)` to your css or use it directly on your code using  `ThemeJs.CurrentTheme()["background"]`
+Then to use a color all you have to do is add a `var(--background)` or `var(--rgb-background)` to your css or use it directly on your code using  `ThemeJs.CurrentTheme()["background"]`
 
 ## Development
 To build the library all you have to do is run the following commands

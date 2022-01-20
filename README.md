@@ -1,8 +1,18 @@
 ## theme.js
-A theme library to help applications managing, loading and applying themes
+A theme library to help applications managing, loading and applying themes.
+
+This library will create css variables for you.
+
+This library will **NOT** create id's or classes for you.
 
 ## Installing
 `npm i @pedro_s/theme.js`
+
+## Supported
+
+- [x] Variables
+- [x] Transitions
+- [ ] Animations
 
 ## Usage
 

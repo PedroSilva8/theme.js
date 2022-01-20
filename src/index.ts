@@ -3,6 +3,15 @@ type Theme = {
   [key: string]: string
 }
 
+const cssRegex = /[^0-9a-zA-Z-_]+/
+
+interface ThemeTransition {
+  duration: number
+  timingFunc: 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'cubic-bezier'
+  cubicBezier?: { a: number; b: number; c: number; d: number }
+  delay?: number
+}
+
 export default class ThemeJs {
   /** List of all themes */
   static Themes: Theme[] = []
@@ -33,12 +42,14 @@ export default class ThemeJs {
    */
   static CreateTheme(name: string, setCurrent = false) {
     this.Themes.push({ name })
-    if (setCurrent) this.SelectedTheme = this.Themes.length - 1
+    if (setCurrent) 
+      this.SelectedTheme = this.Themes.length - 1
   }
 
   static AddTheme(theme: Theme, setCurrent = false) {
     this.Themes.push(theme)
-    if (setCurrent) this.SelectedTheme = this.Themes.length - 1
+    if (setCurrent) 
+      this.SelectedTheme = this.Themes.length - 1
   }
 
   /**
@@ -58,10 +69,31 @@ export default class ThemeJs {
   static LoadTheme(theme: unknown, setCurrent = false) {
     if (theme as Theme) {
       this.Themes.push(theme as Theme)
-      if (setCurrent) this.SelectedTheme = this.Themes.length - 1
+      if (setCurrent) 
+        this.SelectedTheme = this.Themes.length - 1
       return true
     }
     return false
+  }
+
+  /**
+   * Use this function to get a json string of the theme
+   * @param themeName name of the theme, if not set defaults to the current theme
+   * @returns a json string of the theme
+   */
+  static ThemeToJson(themeName?: string) {
+    if (themeName && this.SelectedTheme == -1)
+      return ""
+    
+    if (themeName)
+      return JSON.stringify(this.CurrentTheme())
+
+    const selTheme = this.Themes.find((val) => val.name === themeName)
+
+    if (selTheme)
+      return JSON.stringify(selTheme)
+    else
+      return ""
   }
 
   /**
@@ -71,10 +103,12 @@ export default class ThemeJs {
    * @param themeName the theme being changed, leave undefined to change the current theme
    * @returns
    */
-  static SetThemeValue(param: string, value: string, themeName?: string | undefined) {
-    if (!themeName && this.SelectedTheme === -1) return
+  static SetThemeValue(param: string, value: string, themeName?: string) {
+    if (!themeName && this.SelectedTheme === -1) 
+      return
 
-    if (!themeName) return (this.CurrentTheme()[param] = value)
+    if (!themeName) 
+      return (this.CurrentTheme()[param] = value)
 
     const selTheme = this.Themes.find((val) => val.name === themeName)
 
@@ -82,19 +116,57 @@ export default class ThemeJs {
   }
 
   /**
+   * Use this function to get the CSS var of a theme value
+   * @param param name of the value you want the css var
+   * @param type if you want the prefix rgb or not
+   * @param spacing what you want to replace invalid characters
+   * @returns the the css variable
+   */
+  static ThemeCssVar(param: string, type: 'NORMAL' | 'RGB', spacing = '-') {
+    return '--' + (type == 'RGB' ? 'rgb-' : '') + param.replace(cssRegex, spacing.replace(cssRegex, ''))
+  }
+
+  /**
+   *
+   * @param param name of the value you want to set
+   * @param trans the values of the transition
+   * @param themeName the name of the theme to change, if undefined it goes fo the current
+   */
+  static SetThemeTransition(param: string, trans: ThemeTransition, themeName?: string) {
+    if (!themeName && this.SelectedTheme === -1)
+      return
+
+    let cbVal = ''
+
+    if (trans.timingFunc == 'cubic-bezier' && trans.cubicBezier)
+      cbVal += '(' + trans.cubicBezier.a + ',' + trans.cubicBezier.b + ',' + trans.cubicBezier.c + ',' + trans.cubicBezier.d + ')'
+
+    const transVal = trans.duration.toString() + 's ' + trans.timingFunc + cbVal + ' ' + (trans.delay ? trans.delay.toString() + 's' : '')
+
+    if (!themeName)
+      return (this.CurrentTheme()[param] = transVal)
+
+    const selTheme = this.Themes.find((val) => val.name === themeName)
+
+    if (selTheme) 
+      selTheme[param] = transVal
+  }
+
+  /**
    * Applys Theme To CSS
    * @param name The name of the theme to apply, leave undefined to apply selected theme
-   * @param spacing The value used to replace _ , - by default
+   * @param spacing The value used to replace invalid characters, - by default
    */
-  static ApplyTheme(name?: string | undefined, spacing = '-') {
+  static ApplyTheme(name?: string, spacing = '-') {
     let selTheme = name ? this.Themes.find((val) => val.name === name) : this.CurrentTheme()
 
     if (!selTheme) selTheme = {}
 
     for (const [key, val] of Object.entries(selTheme)) {
       if (key !== 'name') {
-        document.documentElement.style.setProperty('--' + key.replace('_', spacing), val)
-        document.documentElement.style.setProperty('--rgb-' + key.replace('_', spacing), this.hexToRgb(val))
+        document.documentElement.style.setProperty('--' + key.replace(cssRegex, spacing.replace(cssRegex, '')), val)
+        if (/^#[0-9A-F]{6}$/i.test(val))
+          document.documentElement.style.setProperty('--rgb-' + key.replace(cssRegex, spacing.replace(cssRegex, '')), this.hexToRgb(val))
       }
     }
   }

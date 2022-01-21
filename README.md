@@ -12,7 +12,8 @@ This library will **NOT** create id's or classes for you.
 
 - [x] Variables
 - [x] Transitions
-- [ ] Animations
+- [x] Animations
+- [ ] Keyframes
 
 ## Usage
 

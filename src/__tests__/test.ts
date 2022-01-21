@@ -17,8 +17,15 @@ test('Theme Creation', () => {
   ThemeJs.SetThemeTransition('defaultCubic', {
     duration: 2,
     timingFunc: 'cubic-bezier',
-    cubicBezier: { a: 1, b: 0, c: 1, d: 0 },
+    timingFuncVal: [1, 0, 1, 0],
     delay: 0.5,
+  })
+  
+  ThemeJs.SetThemeAnimation('defaultAnim', {
+    IterationCount: 'infinite',
+    Name: "Teste",
+    direction: 'normal',
+    duration: 2
   })
 
   expect(ThemeJs.Themes).toStrictEqual([
@@ -27,8 +34,9 @@ test('Theme Creation', () => {
       white: '#fff',
       black: '#000',
       border: '#FF0000',
-      defaultTrans: '10s ease ',
+      defaultTrans: '10s ease 0s',
       defaultCubic: '2s cubic-bezier(1,0,1,0) 0.5s',
+      defaultAnim: "infinite normal none running Teste 2s  0s"
     },
     {
       name: 'WhiteTheme',

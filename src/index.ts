@@ -5,11 +5,25 @@ type Theme = {
 
 const cssRegex = /[^0-9a-zA-Z-_]+/
 
+type ThemeTiming = 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear' | 'step-start' | 'step-end' | 'cubic-bezier' | 'step' | 'frames'
+
 interface ThemeTransition {
   duration: number
-  timingFunc: 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'cubic-bezier'
-  cubicBezier?: { a: number; b: number; c: number; d: number }
+  timingFunc?: ThemeTiming
+  timingFuncVal?: number[]
   delay?: number
+}
+
+interface ThemeAnimation {
+  delay?: number
+  direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'[]
+  duration?: number
+  fillMode?: 'none' | 'forwards' | 'backwards' | 'both'[]
+  IterationCount?: number | 'infinite'
+  Name?: string
+  playState?: 'running' | 'paused'[]
+  timingFunc?: ThemeTiming
+  timingFuncVal?: number[]
 }
 
 export default class ThemeJs {
@@ -127,7 +141,7 @@ export default class ThemeJs {
   }
 
   /**
-   *
+   * Set a transition for the current or named theme
    * @param param name of the value you want to set
    * @param trans the values of the transition
    * @param themeName the name of the theme to change, if undefined it goes fo the current
@@ -138,10 +152,10 @@ export default class ThemeJs {
 
     let cbVal = ''
 
-    if (trans.timingFunc == 'cubic-bezier' && trans.cubicBezier)
-      cbVal += '(' + trans.cubicBezier.a + ',' + trans.cubicBezier.b + ',' + trans.cubicBezier.c + ',' + trans.cubicBezier.d + ')'
+    if (trans.timingFunc == 'cubic-bezier' && trans.timingFuncVal && trans.timingFuncVal.length != 0)
+      cbVal += "(" + cbVal + trans.timingFuncVal.toString() + ")"
 
-    const transVal = trans.duration.toString() + 's ' + trans.timingFunc + cbVal + ' ' + (trans.delay ? trans.delay.toString() + 's' : '')
+    const transVal = trans.duration + 's ' + (trans.timingFunc || '') + cbVal + ' ' + (trans.delay || '0') + 's'
 
     if (!themeName)
       return (this.CurrentTheme()[param] = transVal)
@@ -151,6 +165,32 @@ export default class ThemeJs {
     if (selTheme) 
       selTheme[param] = transVal
   }
+
+    /**
+   * Set a animation for the current or named theme
+   * @param param name of the value you want to set
+   * @param anim the values of the animation
+   * @param themeName the name of the theme to change, if undefined it goes fo the current
+   */
+    static SetThemeAnimation(param: string, anim: ThemeAnimation, themeName?: string) {
+      if (!themeName && this.SelectedTheme === -1)
+        return
+  
+      let cbVal = ''
+  
+      if (anim.timingFunc == 'cubic-bezier' && anim.timingFuncVal && anim.timingFuncVal.length != 0)
+        cbVal += "(" + cbVal + anim.timingFuncVal.toString() + ")"
+  
+      const transVal = (anim.IterationCount || 'infinite') + " " + (anim.direction || 'normal') + " " + (anim.fillMode || "none") + " " + (anim.playState || 'running') + " " + (anim.Name || '') + " " + (anim.duration || '1') + 's ' + (anim.timingFunc || '') + cbVal + ' ' + (anim.delay || '0' + 's')
+  
+      if (!themeName)
+        return (this.CurrentTheme()[param] = transVal)
+  
+      const selTheme = this.Themes.find((val) => val.name === themeName)
+  
+      if (selTheme) 
+        selTheme[param] = transVal
+    }
 
   /**
    * Applys Theme To CSS

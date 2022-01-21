@@ -9,6 +9,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [ "theme", "front-end" ],
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "tsc",
